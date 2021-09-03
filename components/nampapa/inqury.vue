@@ -1,5 +1,5 @@
 <template>
-  <div style="padding-top:32px;">
+  <div style="padding-top:40px;">
     <vs-card>
       <template #text>
           <vs-input loading v-model="value" placeholder="Name" />

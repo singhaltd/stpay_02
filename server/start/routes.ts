@@ -26,9 +26,27 @@ Route.get('/', async () => {
 
 Route.group(function () {
   Route.post('/auth', 'AuthController.login')
+  Route.post('/authAd', 'AuthController.loginAd')
   Route.post('/logout', 'AuthController.logout')
   Route.post('/register', 'AuthController.register')
   Route.get('/usprofile', 'AuthController.uprofile')
+
+
+  /// Account walkin settting
+  Route.post('/acdetail', 'AccountsController.detail')
+  Route.post('/account', 'AccountsController.store')
+  Route.patch('/account', 'AccountsController.status')
+  Route.get('/acretries', 'AccountsController.retries')
+
+
+
+  Route.post('/transaction', 'TxAuthsController.transaction')
+
+
+  
+  Route.post('/payment', 'PaymentsController.payment')
+
+
 
 
   Route.get('/facebook/redirect', async ({ ally }) => {

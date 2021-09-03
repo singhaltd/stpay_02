@@ -20,11 +20,13 @@
     "core-js": "^3.15.1",
     "nuxt": "^2.15.7",
     "swiper": "^6.8.2",
+    "vee-validate": "^3.4.12",
     "vue-awesome-swiper": "^4.1.1",
     "vue-smooth-dnd": "^0.8.1",
     "vuesax": "^4.0.1-alpha.25"
   },
   "devDependencies": {
+    "@nuxtjs/moment": "^1.6.1",
     "@nuxtjs/pwa": "^3.3.5",
     "fibers": "^5.0.0",
     "sass": "^1.38.0",

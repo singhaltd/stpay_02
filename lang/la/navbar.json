@@ -1,13 +1,54 @@
 {
-    "mainnavbar":[
+    "mainnavbar": [
         {
-            "id":"001",
-            "title":"post",
-            "group":true,
-            "child":[
+            "id": "AC000MN",
+            "title": "ຈັດການບັນຊີ",
+            "path": "ACCO",
+            "group": false
+        },
+        {
+            "id": "BL000WTV",
+            "title": "ປະຫັວດລາຍການ",
+            "path": "TXTAU",
+            "group": false
+        },
+        {
+            "id": "BPAY",
+            "title": "ການຊຳລະ",
+            "path": "BPAY",
+            "group": true,
+            "child": [
                 {
-                    "id":"0001",
-                    "tittle":"alll"
+                    "id": "BL000WTP",
+                    "title": "ນ້ຳປະປາ"
+                },
+                {
+                    "id": "BL000ETP",
+                    "title": "ໄຟຟ້າລາວ"
+                },
+                {
+                    "id": "BL000SMI",
+                    "title": "SMI Microfinance"
+                }
+            ]
+        },
+        {
+            "id": "SECU",
+            "title": "ຈັດການຜູ້ໃຊ້ງານ",
+            "path": "SECU",
+            "group": true,
+            "child": [
+                {
+                    "id": "US000UM",
+                    "title": "ຜູ້ໃຊ້ງານລະບົບ"
+                },
+                {
+                    "id": "US000MF",
+                    "title": "Function"
+                },
+                {
+                    "id": "US000MR",
+                    "title": "Role Group"
                 }
             ]
         }

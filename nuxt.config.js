@@ -1,5 +1,9 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
+  layoutTransition: {
+    name: 'stpay',
+    mode: 'out-in'
+  },
   head: {
     title: 'libas',
     htmlAttrs: {
@@ -27,7 +31,7 @@ export default {
     '~/plugin/vuesax.js',
     '~/plugin/i18n.js',
     '~/plugin/axios.js',
-    '~/plugin/api.js',
+    { src: '~/plugin/vee-validate.js', mode: 'client' },
     { src: '~/plugin/editor.js', mode: 'client' },
   ],
 
@@ -36,7 +40,7 @@ export default {
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
-
+    '@nuxtjs/moment'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -47,7 +51,8 @@ export default {
     '@nuxt/content',
     "@nuxtjs/pwa",
     '@nuxtjs/i18n',
-    '@nuxtjs/auth-next'
+    '@nuxtjs/auth-next',
+    
   ],
   i18n: {
     locales: [
@@ -63,20 +68,10 @@ export default {
   auth: {
     strategies: {
       local: {
-        token: {
-          property: 'token',
-          global: true,
-          // required: true,
-          // type: 'Bearer'
-        },
-        user: {
-          property: 'user',
-          // autoFetch: true
-        },
         endpoints: {
-          login: { url: '/api/auth', method: 'post' },
+          login: { url: '/api/authAd', method: 'post', propertyName: 'token' },
           logout: { url: '/api/logout', method: 'post' },
-          user: { url: '/api/usprofile', method: 'get' }
+          user: { url: '/api/usprofile', method: 'get', propertyName: 'user' }
         }
       },
       facebook: {
@@ -98,10 +93,14 @@ export default {
 
   // Content module configuration: https://go.nuxtjs.dev/config-content
   content: {},
+  moment: {
+    timezone: true
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     extractCSS: true,
+    transpile: ['vee-validate'],
     // or
     extractCSS: {
       ignoreOrder: true

@@ -3,7 +3,7 @@
   <div class="center imgbackground1">
     <vs-dialog prevent-close v-model="active" width="45%">
       <template #header>
-        <img src="/assets/stpay.svg" style="max-width:32px;left:0;" />
+        <img src="/assets/stpay.svg" style="max-width: 32px; left: 0" />
       </template>
       <vs-row>
         <vs-col lg="6">
@@ -11,30 +11,56 @@
         </vs-col>
         <vs-col lg="6">
           <h4>ເຂົ້າສູ່ລະບົບ</h4>
-          <form class="con-form" @submit.prevent="submitlogin">
-            <vs-input v-model="frm.email" placeholder="Email">
-              <template #icon>
-                <i class="bx bxs-user"></i>
-              </template>
-            </vs-input>
-            <vs-input
-              type="password"
-              v-model="frm.password"
-              placeholder="Password"
-            >
-              <template #icon>
-                <i class="bx bxs-lock"></i>
-              </template>
-            </vs-input>
-            <!-- <div class="flex">
+          <ValidationObserver v-slot="{ invalid }" ref="form">
+            <form class="con-form" @submit.prevent="submitlogin">
+              <ValidationProvider
+                name="username"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <vs-input v-model="frm.username" placeholder="username">
+                  <template #icon>
+                    <i class="bx bxs-user"></i>
+                  </template>
+                  <template #message-danger v-if="errors[0]">
+                    {{ errors[0] }}
+                  </template>
+                </vs-input>
+              </ValidationProvider>
+              <ValidationProvider
+                name="password"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <vs-input
+                  type="password"
+                  v-model="frm.password"
+                  placeholder="Password"
+                >
+                  <template #icon>
+                    <i class="bx bxs-lock"></i>
+                  </template>
+                  <template #message-danger v-if="errors[0]">
+                    {{ errors[0] }}
+                  </template>
+                </vs-input>
+              </ValidationProvider>
+              <!-- <div class="flex">
           <vs-checkbox v-model="checkbox1">Remember me</vs-checkbox>
           <a href="#">Forgot Password?</a>
         </div> -->
-            <input type="submit" style="display: none" class="mt-5" />
-            <vs-button block @click="submitlogin">
-              {{ $t("btnLogin") }}
-            </vs-button>
-          </form>
+              <vs-alert color="danger" v-if="message"> {{ message }} </vs-alert>
+              <input type="submit" style="display: none" class="mt-5" />
+              <vs-button
+                :loading="loading"
+                :disabled="invalid"
+                block
+                @click="submitlogin"
+              >
+                {{ $t("btnLogin") }}
+              </vs-button>
+            </form>
+          </ValidationObserver>
         </vs-col>
       </vs-row>
       <template #footer>
@@ -51,23 +77,44 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   data: () => ({
     active: true,
+    loading: false,
+    message: null,
     frm: {
-      email: "",
+      username: "",
       password: "",
     },
     checkbox1: false,
   }),
+
   methods: {
     ...mapActions("auth", ["login"]),
     async submitlogin() {
-      try {
-        let response = await this.$auth.loginWith("local", {
-          data: this.frm,
-        });
-        console.log(response);
-      } catch (err) {
-        console.log(err);
-      }
+      this.$refs.form.validate().then(async (success) => {
+        this.loading = true;
+        if (success) {
+          try {
+            let response = await this.$auth.loginWith("local", {
+              data: this.frm,
+            });
+            if (response.status == 200) {
+              // this.$toast.success("Logged In!");
+              this.$axios.setHeader("Authorization", response.token);
+              this.loading = false;
+              this.$router.push("/");
+            } else {
+              this.message = response;
+            }
+          } catch (err) {
+            this.loading = false;
+            if (err.response.status === 401) {
+              this.message = "ຊື່ຜູ້ໃຊ້ ແລະ ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ";
+            }
+          }
+        }
+        if (!success) {
+          this.loading = false;
+        }
+      });
     },
     authFacebook() {
       this.$auth.loginWith("facebook");
@@ -76,7 +123,7 @@ export default {
 };
 </script>
 <style lang="scss">
-.vs-dialog__header{
+.vs-dialog__header {
   justify-content: left;
 }
 .vs-dialog__close {

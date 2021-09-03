@@ -18,7 +18,9 @@
         </vs-button> -->
       </template>
       <template #right>
-        <vs-button>Get Started</vs-button>
+        <vs-avatar circle>
+          <img src="/avatars/avatar-1.png" alt="" />
+        </vs-avatar>
       </template>
     </vs-navbar>
     <main class="page">
@@ -26,8 +28,25 @@
     </main>
     <aside class="sidebar">
       <vs-sidebar v-model="active" open>
+        <vs-sidebar-item id="dashboard" to="/">
+          <!-- <template #icon>
+              <i class="bx bx-home"></i>
+            </template> -->
+          Work Flow
+        </vs-sidebar-item>
         <template v-for="(itm, index) in asidebar.mainnavbar">
-          <vs-sidebar-group :key="index" v-if="itm.group == true">
+          <vs-sidebar-item
+            :to="`/${itm.path}/${itm.id}`"
+            :id="itm.id"
+            v-if="itm.group == false"
+            :key="index"
+          >
+            <!-- <template #icon>
+              <i class="bx bx-home"></i>
+            </template> -->
+            {{ itm.title }}
+          </vs-sidebar-item>
+          <vs-sidebar-group v-else-if="itm.group == true" :key="index">
             <template #header>
               <vs-sidebar-item arrow>
                 <template #icon>
@@ -40,7 +59,7 @@
               :id="sitm.id"
               v-for="(sitm, i) in itm.child"
               :key="i"
-              item:to="/"
+              :to="`/${itm.path}/${sitm.id}`"
             >
               <template #icon>
                 <i class="bx bxl-instagram"></i>
@@ -67,10 +86,15 @@
         </template>
       </vs-sidebar>
     </aside>
+    <div class="stat-config">
+      <small>Develop By Laithong</small>
+      <small> ພາສາ: ລາວ | ສາຂາ: 000 -> LAITHONG | IP: 10.0.34.37</small>
+    </div>
   </div>
 </template>
 <script>
 export default {
+  middleware: "auth",
   data: () => ({
     active: "home",
     activeSidebar: true,
@@ -80,14 +104,42 @@ export default {
       return require("../lang/la/navbar.json");
     },
   },
+  mounted() {
+    this.$nextTick(() => {
+      this.$nuxt.$loading.start();
+
+      setTimeout(() => this.$nuxt.$loading.finish(), 500);
+    });
+  },
 };
 </script>
 <style lang="scss">
+.page-enter-active,
+.page-leave-active {
+  animation: 2s ease-in-out infinite alternate;
+}
+.page-enter,
+.page-leave-to {
+  animation: 2s ease-in-out infinite alternate;
+}
+.stat-config {
+  position: fixed;
+  bottom: 0;
+  left: 260px;
+  z-index: 12000;
+  border: 0;
+  border-radius: 0 20px 0 0;
+  outline: none;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 *,
 body,
 html,
 button {
-  font-family: "Noto San Lao";
+  font-family: "phetsarath OT";
 }
 .page {
   padding-left: 0 !important;

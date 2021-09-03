@@ -1,33 +1,15 @@
 
 <template>
   <div class="center">
+    <ac-addac :active="active" />
     <div class="card">
       <vs-navbar>
         <template #left>
-          <h4>ຈັດການບັນຊີ</h4>
+          <h4>ປະຫັວດລາຍການ</h4>
         </template>
         <template #right>
           <div class="d-flex">
-            <vs-input
-              v-model="search"
-              :placeholder="$t('_search')"
-              style="margin-right: 10px"
-            />
-            <vs-button-group v-if="tbselected" style="margin-right: 10px">
-              <vs-button
-                ><i class="bx bx-book-open" style="margin-right: 8px"></i>
-                {{ $t("_btn.view") }}
-              </vs-button>
-              <vs-button danger
-                ><i class="bx bx-trash" style="margin-right: 8px"></i>
-                {{ $t("_btn.delete") }}
-              </vs-button>
-            </vs-button-group>
-            <!-- <vs-button :active="active == 0" @click="active = !active">
-              Home
-            </vs-button> -->
-
-            <ac-addac />
+            <tx-query />
           </div>
         </template>
       </vs-navbar>
@@ -35,13 +17,17 @@
         <vs-table v-model="tbselected">
           <template #thead>
             <vs-tr>
-              <vs-th> ລະຫັດລູກຄ້າ </vs-th>
-              <vs-th> ເລກບັນຊີ </vs-th>
-              <vs-th> ຊື່ບັນຊີ </vs-th>
-              <vs-th> ສະກຸນເງິນ </vs-th>
-              <vs-th> ຊັ້ນບັນຊີ </vs-th>
-              <vs-th> ປະເພດ </vs-th>
-              <vs-th> ສະຖານະ </vs-th>
+              <vs-th> {{ $t("_referno") }} </vs-th>
+              <vs-th> {{ $t("_productcode") }} </vs-th>
+              <vs-th> {{ $t("_RRN") }} </vs-th>
+              <vs-th> {{ $t("_typereq") }} </vs-th>
+              <vs-th> {{ $t("_client_id") }} </vs-th>
+              <vs-th> {{ $t("_client_name") }} </vs-th>
+              <vs-th> {{ $t("_billno") }} </vs-th>
+              <vs-th> {{ $t("_amount") }} </vs-th>
+              <vs-th> {{ $t("_currentcy") }} </vs-th>
+              <vs-th> {{ $t("_txtdate") }} </vs-th>
+              <vs-th> {{ $t("_maker") }} </vs-th>
             </vs-tr>
           </template>
           <template #tbody>
@@ -52,19 +38,38 @@
               :is-selected="tbselected == tr"
             >
               <vs-td>
-                {{ tr.custno }}
+                {{ tr.refno }}
               </vs-td>
               <vs-td>
-                {{ tr.custacno }}
+                {{ tr.msgid }}
               </vs-td>
               <vs-td>
-                {{ tr.acc_desc }}
+                {{ tr.rrn }}
               </vs-td>
               <vs-td>
-                {{ tr.ccy }}
+                {{ tr.reqtype }}
               </vs-td>
               <vs-td>
-                {{ tr.accountclass }}
+                {{ tr.billno }}
+              </vs-td>
+              <vs-td>
+                {{ tr.fullname }}
+              </vs-td>
+              <vs-td>
+                {{ tr.desc1 }}
+              </vs-td>
+
+              <vs-td>
+                {{ tr.bill_amount | currency }}
+              </vs-td>
+              <vs-td>
+                {{ tr.accy }}
+              </vs-td>
+              <vs-td>
+                {{ $moment(tr.txndate).format("DD/MM/YYYY") }}
+              </vs-td>
+              <vs-td>
+                {{ tr.maker }}
               </vs-td>
               <vs-td>
                 {{ tr.casatype }}
@@ -77,7 +82,7 @@
           <template #footer v-if="list.meta.last_page > 1">
             <vs-pagination
               v-model="page"
-              :length="$vs.getLength(users, list.meta.total)"
+              :length="$vs.getLength(list.data, list.meta.last_page)"
             />
           </template>
         </vs-table>
@@ -89,10 +94,6 @@
 import { mapState, mapActions } from "vuex";
 export default {
   layout: "stpay",
-  transition: {
-    name: "AC000MN",
-    mode: "out-in",
-  },
   data: () => ({
     search: "",
     posts: [],
@@ -110,6 +111,11 @@ export default {
       },
     ],
   }),
+  filters: {
+    currency(v) {
+      return v.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
+    },
+  },
   activated() {
     // Call fetch again if last fetch more than 30 sec ago
     if (this.$fetchState.timestamp <= Date.now() - 30000) {
@@ -117,10 +123,10 @@ export default {
     }
   },
   async fetch({ store }) {
-    await store.dispatch("account/retries");
+    await store.dispatch("transaction/gettransaction");
   },
   computed: {
-    ...mapState("account", ["list"]),
+    ...mapState("transaction", ["list"]),
   },
 };
 </script>
